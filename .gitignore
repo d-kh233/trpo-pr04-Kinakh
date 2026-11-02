@@ -1,0 +1,31 @@
+
+
+
+# Зависимости
+vendor/
+node_modules/
+
+# Окружение и секреты
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# ОС
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Логи, кэш, временное
+*.log
+cache/
+tmp/
+*.tmp
+
+# Архивы и загрузки
+*.zip
+*.rar
+uploads/
