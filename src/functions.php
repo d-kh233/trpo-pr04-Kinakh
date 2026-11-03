@@ -1,5 +1,5 @@
 <?php
-$pathcsv = __DIR__ . '\..\dataset\employees.csv';
+$pathcsv = __DIR__ . '/../dataset/employees.csv';
 
 $readcsv = '';
 $readcsv = fopen( $pathcsv, 'r');
@@ -7,11 +7,11 @@ if ($readcsv == false)
     {
         die ("Не удалось открыть файл: $pathcsv");
     }
-$headers = fgetcsv($readcsv, 0, ";", ";");
+$headers = fgetcsv($readcsv, 0, ";");
 $rows = [];
 
 
-while (($rowscsv = fgetcsv($readcsv, null, ";", ";")) !== false)
+while (($rowscsv = fgetcsv($readcsv, null, ";")) !== false)
     {
         $rows[] = $rowscsv;
     }
