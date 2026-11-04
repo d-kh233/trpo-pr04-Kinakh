@@ -1,9 +1,20 @@
+<?php
+require_once __DIR__ . '\..\src\functions.php';
+$input = [];
+$errors = [];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = readPOSTregistration();
+    $errors = validateInput($input);
+}
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Список сотрудников</title>
+
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -14,33 +25,41 @@ $appVersion = ' 1.0.0 ';
 $currentDate = date(' d.m.Y H:i:s ');
 echo( "Версия приложения $appVersion <br>");
 echo( "Дата  $currentDate <br>");
-require_once __DIR__ . '\..\src\functions.php';
+
 
 $result = readingcsv(__DIR__ . '/../dataset/employees.csv', ";");
 
 
 ?>
+    <a href="#employeeslist">Перейти к списку</a>
 
-<form id = "signup" method="post" > 
-    <h2> Регистрация </h2>
-     <label for ="password"> Введите имя: 
-                 <input type="text" name="name" >
-            </label>
-     <input   type="text" name="name" >
-     <input  type="text" name="firstname">
-     <input  type="text" name="lastname">
-     <input  type="email" name="name" >
-     <label for = "gender"> Пол: 
-            <select method="post" id="gender">
+
+<form id="signup" method="post" action="">
+    <h2>Регистрация</h2>
+
+    <label for="name">Введите имя:</label>
+    <input type="text" id="name" name="name" value="<?= e($input['name'] ?? '') ?>">
+
+    <label for="department">Отдел:</label>
+    <input type="text" id="department" name="department" value="<?= e($input['department'] ?? '')  ?>">
+
+    <label for="experience">Стаж:</label>
+    <input type="number" id="experience" name="experience" min="0" value="<?=e($input['experience'] ?? '') ?>">
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" value="<?= e($input['email'] ?? '') ?>">
+
+    <button type="submit">Отправить</button>
+
+
+<!--
+<label for = "gender"> Пол: 
+            <select id="gender">
                 <option value="Female">Женский</option>
                 <option value="Male">Мужской</option>
             </select>
-            </label>
-
-<label for = "submitbutton">
-<button name="submitbutton" method="post" type="submit" > Отправить </button>
-     </label>
-
+            </label> 
+-->
 
 </form>
 <section id = "employeeslist">
@@ -81,7 +100,8 @@ $result = readingcsv(__DIR__ . '/../dataset/employees.csv', ";");
     </table>
 <?php endif; ?>
 
-                </main>
+                
 </section>
+</main>
 </body>
 </html>
