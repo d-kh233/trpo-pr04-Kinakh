@@ -1,25 +1,35 @@
 <?php
-$pathcsv = __DIR__ . '/../dataset/employees.csv';
 
+function readingcsv ($pathcsv, $divide_by) 
+{ 
 $readcsv = '';
 $readcsv = fopen( $pathcsv, 'r');
 if ($readcsv == false) 
     {
         die ("Не удалось открыть файл: $pathcsv");
     }
-$headers = fgetcsv($readcsv, 0, ";");
+$headers = fgetcsv($readcsv, 0, $divide_by, '"', "\\");
+
+// удаление BOM и пробелов
+$headers = array_map(fn($h) => trim(str_replace("\xEF\xBB\xBF", '', $h)), $headers);
 $rows = [];
 
 
-while (($rowscsv = fgetcsv($readcsv, null, ";")) !== false)
+while (($rowscsv = fgetcsv($readcsv, 0, $divide_by, '"', "\\")) !== false)
     {
         $rows[] = $rowscsv;
     }
 fclose($readcsv);
-echo "Заголовки:\n";
-print_r($headers);
+$result = [];
+foreach ($rows as $row) {
+    if (count($row) === count($headers)) {   // првоерка на отсутст-е в строке пустых значений
+        $result[] =array_combine($headers, $row);
+    }
+}
 
-echo "Строки:\n";
-print_r($rows);
+return $result;
+}
 
-?>
+function e(string $value): string {
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+}
