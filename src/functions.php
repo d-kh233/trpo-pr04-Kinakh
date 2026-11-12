@@ -38,17 +38,26 @@ function validateInput(array $input): array
 {
     $errors = [];
 
-    /* // 
-    $length = preg_match_all($input['name']);
+     // 
+    $length = preg_match_all('/./u', $input['name']);
     if ($length < 2 || $length > 50) {
         $errors['name'] = 'Имя должно быть от 2 до 50 символов';
-    }
-        */
+    }   
+        
     // в имени разрешены только буквы кириллица и англ.яз., пробел и дефис
     if (preg_match('/[^а-яА-ЯёЁa-zA-Z\s\-]/u', $input['name'])) {
         $errors['name'] = 'Имя содержит недопустимые символы';
     }
-    if (filter_var($input['email']) !== true) {
+    $length = preg_match_all('/./u', $input['department']);
+    if ($length < 2 || $length > 200) {
+        $errors['department'] = 'Название отдела должно быть от 2 до 200 символов';
+    }   
+        
+    // в имени разрешены только буквы кириллица и англ.яз., пробел и дефис
+    if (preg_match('/[^а-яА-ЯёЁ\s\-]/u', $input['department'])) {
+        $errors['department'] = 'Название отдела содержит недопустимые символы';
+    }
+    if (filter_var (($input['email']),(FILTER_VALIDATE_EMAIL)) === false) {
         $errors['email'] = 'Введите корректный email';
     }
 
@@ -80,4 +89,13 @@ function readPOSTregistration(): array
        'experience' => $experience,
        'email' => $email,
     ];
+}
+
+function getDepartments(array $employees): array
+{
+    $departments = array_column($employees, 'department');
+    $departments = array_unique($departments);
+    sort($departments);
+
+    return $departments;
 }

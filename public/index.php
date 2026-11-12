@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . '\..\src\functions.php';
+require_once __DIR__ . '/../src/functions.php';
 $input = [];
 $errors = [];
-
+$department = trim($_GET['department'] ?? '');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = readPOSTregistration();
     $errors = validateInput($input);
@@ -27,7 +27,19 @@ echo( "Версия приложения $appVersion <br>");
 echo( "Дата  $currentDate <br>");
 
 
-$result = readingcsv(__DIR__ . '/../dataset/employees.csv', ";");
+$all = readingcsv(__DIR__ . '/../dataset/employees.csv', ";");
+
+if ($department === '') {
+    $result = $all;
+} else {
+    $result = [];
+    foreach ($all as $row) {
+        if ($row['department'] === $department) {
+            $result[] = $row;
+        }
+    }
+}
+
 
 
 ?>
@@ -39,17 +51,22 @@ $result = readingcsv(__DIR__ . '/../dataset/employees.csv', ";");
 
     <label for="name">Введите имя:</label>
     <input type="text" id="name" name="name" value="<?= e($input['name'] ?? '') ?>">
+    <span class="error"><?= e($errors['name'] ?? '') ?></span>
 
     <label for="department">Отдел:</label>
     <input type="text" id="department" name="department" value="<?= e($input['department'] ?? '')  ?>">
-
+    <span class="error"><?= e($errors['department'] ?? '') ?></span>
+    
     <label for="experience">Стаж:</label>
     <input type="number" id="experience" name="experience" min="0" value="<?=e($input['experience'] ?? '') ?>">
+    <span class="error"><?= e($errors['experience'] ?? '') ?></span>
 
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" value="<?= e($input['email'] ?? '') ?>">
+    <span class="error"><?= e($errors['email'] ?? '') ?></span>
 
     <button type="submit">Отправить</button>
+</form>
 
 
 <!--
@@ -60,8 +77,20 @@ $result = readingcsv(__DIR__ . '/../dataset/employees.csv', ";");
             </select>
             </label> 
 -->
-
+<form method="get" action="">
+    <select name="department">
+        <option value="">Все отделы</option>
+        <?php 
+        foreach (getDepartments($all) as $dep): ?>
+            <option value="<?= e($dep) ?>" <?= $dep === $department ? 'selected' : '' ?>>
+                <?= e($dep) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <button type="submit">Показать</button>
 </form>
+
+
 <section id = "employeeslist">
     <h1> Список сотрудников </h1>
     <?php if (((count ($result) )) == 0 ): ?>
