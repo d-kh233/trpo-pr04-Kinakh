@@ -1,13 +1,24 @@
 <?php
+ini_set('display_errors', '1');
+error_reporting(E_ALL);
+
 require_once __DIR__ . '/../src/functions.php';
 $input = [];
-$errors = [];
+$errors = []; 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = readPOSTregistration();
+    $errors = validateInput($input);
+}
+
+
 $department = trim($_GET['department'] ?? '');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = readPOSTregistration();
     $errors = validateInput($input);
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -49,7 +60,7 @@ if ($department === '') {
 <form id="signup" method="post" action="">
     <h2>Регистрация</h2>
 
-    <label for="name">Введите имя:</label>
+    <label for="name">Введите ФИО:</label>
     <input type="text" id="name" name="name" value="<?= e($input['name'] ?? '') ?>">
     <span class="error"><?= e($errors['name'] ?? '') ?></span>
 
@@ -89,7 +100,9 @@ if ($department === '') {
     </select>
     <button type="submit">Показать</button>
 </form>
-
+<?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($errors)): ?>
+    <p>Данные корректны</p>
+<?php endif; ?>
 
 <section id = "employeeslist">
     <h1> Список сотрудников </h1>
